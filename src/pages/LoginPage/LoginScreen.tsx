@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store/store";
+import { loginUser } from "../../features/auth/authSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,47 +26,25 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState("1");
   const [password, setPassword] = useState("1");
   const [loggedIn, setLoggedIn] = useState(false);
+  const dispatch: AppDispatch = useDispatch();
 
-  const loginUser = async (username: string, password: string) => {
-    try {
-      const response = await fetch(
-        "https://backend-practice.euriskomobility.me/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: username,
-            password,
-            token_expires_in: "30m",
-          }),
-        }
-      );
-      const responseData = await response.json();
-      if (!response.ok) {
-        throw new Error(responseData.message || "Login failed");
-      }
-      setIsAuthenticated(true);
-      setLoggedIn(true);
-      return responseData;
-    } catch (error) {
-      let errorMessage = "An unexpected error occurred";
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-      toast.error(`Login failed: ${errorMessage}`);
-      return false;
-    }
-  };
-
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const userData = await loginUser(username, password);
-    if (userData) {
-      toast.success(`Welcome , ${username}, Login successful!`);
-      setLoggedIn(true);
+    if (!username.trim() || !password.trim()) {
+      toast.error("Please enter both username and password to login.");
+      return;
     }
+
+    dispatch(loginUser({ username, password }))
+      .unwrap()
+      .then((_response) => {
+        toast.success(`Welcome, ${username}, login successful!`);
+        setIsAuthenticated(true);
+        setLoggedIn(true);
+      })
+      .catch(() => {
+        toast.error(`Login failed: Check Username Or Password!`);
+      });
   };
 
   if (loggedIn) {

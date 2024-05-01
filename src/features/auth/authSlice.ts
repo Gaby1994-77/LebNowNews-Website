@@ -1,21 +1,66 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
-interface User {
+interface LoginPayload {
+  username: string;
+  password: string;
+}
+
+interface LoginResponse {
   email: string;
   token: string;
   token_expires_in: string;
 }
 
 interface AuthState {
+  accessToken: string;
+  refreshToken: string;
   isAuthenticated: boolean;
-  user: User | null;
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
 }
 
+const initialState: AuthState = {
+  accessToken: "",
+  refreshToken: "",
+  isAuthenticated: false,
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    setAccessToken: (
+      state,
+      action: PayloadAction<{ token: string; expiresIn: string }>
+    ) => {
+      state.accessToken = action.payload.token;
+      state.isAuthenticated = true;
+    },
+    setRefreshToken: (
+      state,
+      action: PayloadAction<{ token: string; expiresIn: string }>
+    ) => {
+      state.refreshToken = action.payload.token;
+      state.isAuthenticated = true;
+    },
+    resetAuthState: (state) => {
+      state.accessToken = "";
+      state.refreshToken = "";
+      state.isAuthenticated = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.accessToken = action.payload.token;
+        state.refreshToken = "";
+        state.isAuthenticated = true;
+      })
+      .addCase(loginUser.rejected, (state, action) => {});
+  },
+});
+
 export const loginUser = createAsyncThunk<
-  User,
-  { username: string; password: string },
+  LoginResponse,
+  LoginPayload,
   { rejectValue: string }
 >("auth/loginUser", async ({ username, password }, { rejectWithValue }) => {
   try {
@@ -27,48 +72,57 @@ export const loginUser = createAsyncThunk<
         body: JSON.stringify({ email: username, password }),
       }
     );
+
     const data = await response.json();
-    if (!response.ok) throw new Error(data.message || "Login failed");
+    if (!response.ok) {
+      throw new Error(data.message || "Login failed");
+    }
     return {
       email: data.email,
       token: data.access_token,
       token_expires_in: data.token_expires_in,
     };
   } catch (error) {
-    return rejectWithValue((error as Error).message);
+    return rejectWithValue(
+      (error as any).message || "An unexpected error occurred"
+    );
   }
 });
 
-const authSlice = createSlice({
-  name: "auth",
-  initialState: {
-    isAuthenticated: false,
-    user: null,
-    status: "idle",
-    error: null,
-  } as AuthState,
-  reducers: {
-    logout: (state) => {
-      state.isAuthenticated = false;
-      state.user = null;
-    },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
-        state.isAuthenticated = true;
-        state.user = action.payload;
-        state.status = "succeeded";
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload ?? "An unknown error occurred";
-      });
-  },
+export const registerUser = createAsyncThunk<
+  LoginResponse,
+  LoginPayload,
+  { rejectValue: string }
+>("auth/registerUser", async ({ username, password }, { rejectWithValue }) => {
+  try {
+    const response = await fetch(
+      "https://backend-practice.euriskomobility.me/register",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: username, password }),
+      }
+    );
+    const data = await response.json();
+    if (!response.ok) {
+      if (response.status === 409) {
+        return rejectWithValue("Username already exists");
+      }
+      throw new Error(data.message || "Registration failed");
+    }
+    return {
+      email: data.email,
+      token: data.access_token,
+      token_expires_in: data.token_expires_in,
+    };
+  } catch (error) {
+    return rejectWithValue(
+      (error as any).message || "An unexpected error occurred"
+    );
+  }
 });
 
-export const { logout } = authSlice.actions;
+export const { setAccessToken, setRefreshToken, resetAuthState } =
+  authSlice.actions;
+
 export default authSlice.reducer;

@@ -65,7 +65,7 @@ const Drawer = () => {
           </ul>
           <div className="hidden lg:flex lg:items-center gap-x-2">
             <button className="flex items-center justify-center rounded-md bg-[#4A3BFF] text-white px-6 py-2.5 font-semibold hover:shadow-lg hover:drop-shadow transition duration-200">
-              Logout
+              <Link to="/">Logout</Link>
             </button>
           </div>
         </div>
