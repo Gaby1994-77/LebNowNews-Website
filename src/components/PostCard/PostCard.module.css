@@ -1,0 +1,64 @@
+.postCardContainer {
+  margin-top: 2rem;
+  margin-bottom: 2.5rem;
+  margin-right: 1.5rem;
+}
+
+.cardsWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: white;
+  box-shadow: 0 2px 18px -6px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 20rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  font-family: sans-serif;
+}
+
+.cardImage {
+  width: 100%;
+}
+
+.cardBody {
+  padding: 1rem 1rem 1.5rem;
+}
+
+.cardTitle {
+  color: #333;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.cardContent {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: #707070;
+}
+
+.viewButton {
+  margin-top: 1.5rem;
+  margin-right: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  border-radius: 0;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: #0077cc;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.viewButton:hover {
+  background-color: #005fa3;
+}
+
+.viewButton:active {
+  background-color: #0077cc;
+}

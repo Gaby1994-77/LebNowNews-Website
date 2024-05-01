@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { loginUser } from "../../features/auth/authSlice";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
+import { loginUser, setAccessToken } from "../../features/auth/authSlice";
+import toast, { Toaster } from "react-hot-toast";
 import {
   LoginContainer,
   LoginForm,
@@ -18,15 +16,15 @@ import {
   WelcomeTitle,
 } from "./LoginScreen.Style";
 
-type LoginScreenProps = {
+interface LoginScreenProps {
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-};
+}
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
-  const [username, setUsername] = useState("1");
-  const [password, setPassword] = useState("1");
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState("Samir");
+  const [password, setPassword] = useState("123");
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -38,18 +36,14 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
     dispatch(loginUser({ username, password }))
       .unwrap()
       .then((_response) => {
-        toast.success(`Welcome, ${username}, login successful!`);
+        toast.success(`Welcome, ${username}! Login successful.`);
         setIsAuthenticated(true);
-        setLoggedIn(true);
+        navigate("/Home", { replace: true });
       })
       .catch(() => {
-        toast.error(`Login failed: Check Username Or Password!`);
+        toast.error("Login failed: Check Username Or Password!");
       });
   };
-
-  if (loggedIn) {
-    return <Navigate to="/Home" />;
-  }
 
   return (
     <LoginContainer
@@ -89,7 +83,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
           <Link to="/signup"> Sign up</Link>
         </SignUp>
       </LoginForm>
-      <ToastContainer />
+      <Toaster />
     </LoginContainer>
   );
 };

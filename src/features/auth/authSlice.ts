@@ -54,7 +54,7 @@ const authSlice = createSlice({
         state.refreshToken = "";
         state.isAuthenticated = true;
       })
-      .addCase(loginUser.rejected, (state, action) => {});
+      .addCase(loginUser.rejected, (_state, _action) => {});
   },
 });
 

@@ -1,22 +1,25 @@
-import React, { useState, useEffect, FC } from "react";
-import "./AboutUsScreen.Styles.css"; // Import CSS file
-
-// Import images
+import React, {
+  useState,
+  useEffect,
+  FC,
+  Dispatch,
+  SetStateAction,
+} from "react";
+import "./AboutUsScreen.Styles.css";
 import founderImage from "../../assets/images/aboutus.jpg";
 import additionalImage from "../../assets/images/appdownload.jpg";
 import QRImage from "../../assets/images/QRCode.png";
-
-const AboutUs: FC = () => {
+interface AboutUsProps {
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+}
+const AboutUs: FC<AboutUsProps> = () => {
   const [visitorCount, setVisitorCount] = useState<number>(3457852452);
-
   useEffect(() => {
     const interval = setInterval(() => {
       setVisitorCount((prevCount) => prevCount + 1);
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
-
   return (
     <div className="aboutUs">
       <header className="aboutHeader">

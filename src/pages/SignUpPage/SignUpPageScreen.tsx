@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import "react-toastify/dist/ReactToastify.css";
 import {
   SignUpContainer,
   SignUpForm,
@@ -12,7 +11,7 @@ import {
   SignUpButton,
   BackToLogin,
 } from "./SignUpPage.Style";
-import { toast } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignUpScreen: React.FC = () => {
   const [emailUsername, setEmailUsername] = useState("");
@@ -53,16 +52,15 @@ const SignUpScreen: React.FC = () => {
       );
       toast.success("Account created successfully!");
     } catch (error: any) {
-      if (
-        error.response &&
-        error.response.status === 400 &&
-        error.response.data.message === "User already exists"
-      ) {
-        setError(
-          "User already exists. Please use a different email or username."
-        );
+      if (error.response && error.response.status === 400) {
+        // Handle any error here
+        if (error.response.data.message === "User already exists") {
+          toast.error("User already exists");
+        } else {
+          toast.error("User already exists");
+        }
       } else {
-        toast.error("User already exists");
+        toast.error("An error occurred while creating the account");
       }
     }
   };
@@ -114,6 +112,7 @@ const SignUpScreen: React.FC = () => {
           Already have an account? <Link to="/">Log in</Link>
         </BackToLogin>
       </SignUpForm>
+      <Toaster />
     </SignUpContainer>
   );
 };

@@ -1,10 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { resetAuthState } from "../../features/auth/authSlice";
+import logo from "../../assets/images/Logo.jpg";
 
-const Drawer = () => {
+import toast, { Toaster } from "react-hot-toast";
+interface NavbarProps {
+  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(
     localStorage.getItem("isMenuOpen") === "true"
   );
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     localStorage.setItem("isMenuOpen", JSON.stringify(isMenuOpen));
@@ -12,6 +22,19 @@ const Drawer = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleNavigation = () => {
+    navigate("/home", { replace: true });
+  };
+
+  const handleLogout = () => {
+    dispatch(resetAuthState());
+    localStorage.clear();
+    sessionStorage.clear();
+    setIsAuthenticated(false);
+    navigate("/");
+    toast.success(`Logged out`);
   };
 
   return (
@@ -34,16 +57,19 @@ const Drawer = () => {
               />
             </svg>
           </button>
-          <h2 className="text-black dark:text-white font-bold text-2xl">
-            LebNow
-          </h2>
+          <div className="flex items-center ">
+            <img src={logo} alt="Logo" className="w-12 h-10 mr-4" />
+            <h2 className="text-black dark:text-white font-bold text-2xl">
+              LebNow
+            </h2>
+          </div>
           <ul className="hidden lg:flex space-x-8">
             <li>
               <Link
                 to="/News"
                 className="text-black dark:text-white hover:underline"
               >
-                News
+                <button onClick={handleNavigation}>News</button>
               </Link>
             </li>
             <li>
@@ -64,8 +90,11 @@ const Drawer = () => {
             </li>
           </ul>
           <div className="hidden lg:flex lg:items-center gap-x-2">
-            <button className="flex items-center justify-center rounded-md bg-[#4A3BFF] text-white px-6 py-2.5 font-semibold hover:shadow-lg hover:drop-shadow transition duration-200">
-              <Link to="/">Logout</Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center rounded-md bg-[#4A3BFF] text-white px-6 py-2.5 font-semibold hover:shadow-lg hover:drop-shadow transition duration-200"
+            >
+              Logout
             </button>
           </div>
         </div>
@@ -80,6 +109,9 @@ const Drawer = () => {
             <li className="hover:underline hover:underline-offset-4 hover:w-fit transition-all duration-100 ease-linear">
               <Link to="/About">About Us</Link>
             </li>
+            <li className="hover:underline hover:underline-offset-4 hover:w-fit transition-all duration-100 ease-linear">
+              <button onClick={handleLogout}>Logout</button>
+            </li>
           </ul>
         )}
       </nav>
@@ -87,4 +119,4 @@ const Drawer = () => {
   );
 };
 
-export default Drawer;
+export default Navbar;

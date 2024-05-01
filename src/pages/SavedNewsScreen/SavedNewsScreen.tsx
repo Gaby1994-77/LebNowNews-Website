@@ -1,7 +1,13 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
-function SavedNewsScreen() {
-  return <div>Saved News screeeen</div>;
+interface SavedNewsScreenProps {
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
 }
+
+const SavedNewsScreen: React.FC<SavedNewsScreenProps> = ({
+  setIsAuthenticated,
+}) => {
+  return <div>Saved News Screen</div>;
+};
 
 export default SavedNewsScreen;
