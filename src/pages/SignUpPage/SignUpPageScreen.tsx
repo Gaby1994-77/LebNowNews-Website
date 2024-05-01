@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   SignUpContainer,
   SignUpForm,
@@ -11,57 +11,53 @@ import {
   SignUpButton,
   BackToLogin,
 } from "./SignUpPage.Style";
-import toast, { Toaster } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setAccessToken, setRefreshToken } from "../../store/slice/authSlice";
 
 const SignUpScreen: React.FC = () => {
-  const [emailUsername, setEmailUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  const handleInputChange =
-    (setter: React.Dispatch<React.SetStateAction<string>>) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setError(null);
-      setter(e.target.value);
-    };
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!emailUsername || !password || !confirmPassword) {
-      setError("All fields are required");
+    if (!email || !password || !confirmPassword) {
+      toast.error("All fields are required");
       return;
     }
 
-    const [email, username] = emailUsername.split("@");
-
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
     try {
-      const response = await axios.post(
+      const response = await fetch(
         "https://backend-practice.euriskomobility.me/signup",
         {
-          email,
-          username,
-          password,
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
         }
       );
-      toast.success("Account created successfully!");
-    } catch (error: any) {
-      if (error.response && error.response.status === 400) {
-        // Handle any error here
-        if (error.response.data.message === "User already exists") {
-          toast.error("User already exists");
-        } else {
-          toast.error("User already exists");
-        }
-      } else {
-        toast.error("An error occurred while creating the account");
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          data.message || "An error occurred while creating the account"
+        );
       }
+      dispatch(setAccessToken(data.accessToken));
+      dispatch(setRefreshToken(data.refreshToken));
+      console.log(data.accessToken);
+      navigate("/", { replace: true });
+
+      toast.success("Account created successfully!");
+    } catch (error) {
+      console.error("Signup error:", error);
+      toast.error((error as Error).message || "An unexpected error occurred");
     }
   };
 
@@ -70,30 +66,27 @@ const SignUpScreen: React.FC = () => {
       style={{
         backgroundImage: `url(${require("../../assets/images/backgroundLogIn.jpg")})`,
         backgroundSize: "cover",
-        position: "relative",
       }}
     >
       <Title>Create an Account</Title>
       <SignUpForm onSubmit={handleSubmit}>
         <FormGroup>
-          <Label htmlFor="emailUsername">Email / Username</Label>
+          <Label htmlFor="email">Email</Label>
           <Input
-            type="text"
-            id="emailUsername"
-            placeholder="Enter Your Email or Username"
-            value={emailUsername}
-            onChange={handleInputChange(setEmailUsername)}
+            id="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </FormGroup>
-
         <FormGroup>
           <Label htmlFor="password">Password</Label>
           <Input
             type="password"
             id="password"
-            placeholder="Enter Your Password"
+            placeholder="Enter your password"
             value={password}
-            onChange={handleInputChange(setPassword)}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </FormGroup>
         <FormGroup>
@@ -101,18 +94,16 @@ const SignUpScreen: React.FC = () => {
           <Input
             type="password"
             id="confirmPassword"
-            placeholder="Confirm Your Password"
+            placeholder="Confirm your password"
             value={confirmPassword}
-            onChange={handleInputChange(setConfirmPassword)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </FormGroup>
-        {error && <div style={{ color: "red" }}>{error}</div>}
         <SignUpButton type="submit">Create Account</SignUpButton>
         <BackToLogin>
           Already have an account? <Link to="/">Log in</Link>
         </BackToLogin>
       </SignUpForm>
-      <Toaster />
     </SignUpContainer>
   );
 };

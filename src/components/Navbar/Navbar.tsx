@@ -1,17 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { resetAuthState } from "../../features/auth/authSlice";
+import { resetAuthState } from "../../store/slice/authSlice";
 import logo from "../../assets/images/Logo.jpg";
 
 import toast, { Toaster } from "react-hot-toast";
-interface NavbarProps {
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
-const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
+const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(
-    localStorage.getItem("isMenuOpen") === "true"
+    localStorage.getItem("isMenuOpen") === "true" || false
   );
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -25,16 +22,13 @@ const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
   };
 
   const handleNavigation = () => {
-    navigate("/home", { replace: true });
+    navigate("/", { replace: true });
   };
 
   const handleLogout = () => {
     dispatch(resetAuthState());
-    localStorage.clear();
-    sessionStorage.clear();
-    setIsAuthenticated(false);
     navigate("/");
-    toast.success(`Logged out`);
+    toast.success("Logged out");
   };
 
   return (
@@ -66,7 +60,7 @@ const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
           <ul className="hidden lg:flex space-x-8">
             <li>
               <Link
-                to="/News"
+                to="/"
                 className="text-black dark:text-white hover:underline"
               >
                 <button onClick={handleNavigation}>News</button>
@@ -74,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
             </li>
             <li>
               <Link
-                to="/SavedNews"
+                to="/savedNews"
                 className="text-black dark:text-white hover:underline"
               >
                 Saved News
@@ -82,7 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
             </li>
             <li>
               <Link
-                to="/About"
+                to="/about"
                 className="text-black dark:text-white hover:underline"
               >
                 About Us
@@ -115,6 +109,7 @@ const Navbar: React.FC<NavbarProps> = ({ setIsAuthenticated }) => {
           </ul>
         )}
       </nav>
+      <Toaster position="top-right" />
     </div>
   );
 };

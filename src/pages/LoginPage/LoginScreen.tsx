@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../store/store";
-import { loginUser, setAccessToken } from "../../features/auth/authSlice";
-import toast, { Toaster } from "react-hot-toast";
+import { setAccessToken, setRefreshToken } from "../../store/slice/authSlice";
+import { toast } from "react-hot-toast";
 import {
   LoginContainer,
   LoginForm,
@@ -16,33 +16,46 @@ import {
   WelcomeTitle,
 } from "./LoginScreen.Style";
 
-interface LoginScreenProps {
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
-  const [username, setUsername] = useState("Samir");
+const LoginScreen: React.FC = () => {
+  const [email, setEmail] = useState("Samir");
   const [password, setPassword] = useState("123");
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!username.trim() || !password.trim()) {
-      toast.error("Please enter both username and password to login.");
+    if (!email.trim() || !password.trim()) {
+      toast.error("Please enter both email and password to login.");
       return;
     }
 
-    dispatch(loginUser({ username, password }))
-      .unwrap()
-      .then((_response) => {
-        toast.success(`Welcome, ${username}! Login successful.`);
-        setIsAuthenticated(true);
-        navigate("/Home", { replace: true });
-      })
-      .catch(() => {
-        toast.error("Login failed: Check Username Or Password!");
+    try {
+      const response = await fetch(
+        "https://backend-practice.euriskomobility.me/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password, token_expires_in: "1m" }),
+        }
+      );
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      dispatch(setAccessToken(data.accessToken));
+      dispatch(setRefreshToken(data.refreshToken));
+      console.log(data.accessToken);
+      toast.success(`Welcome, ${email}! Login successful.`, {
+        position: "top-right",
+        icon: "👏",
       });
+      navigate("/", { replace: true });
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error((error as Error).message);
+    }
   };
 
   return (
@@ -57,13 +70,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
         <Title>Sign in to your account</Title>
         <form onSubmit={handleSubmit}>
           <FormGroup>
-            <Label htmlFor="username">Your Username</Label>
+            <Label htmlFor="username">User</Label>
             <Input
               type="text"
               id="username"
-              placeholder="Username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
           <FormGroup>
@@ -83,7 +96,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ setIsAuthenticated }) => {
           <Link to="/signup"> Sign up</Link>
         </SignUp>
       </LoginForm>
-      <Toaster />
     </LoginContainer>
   );
 };

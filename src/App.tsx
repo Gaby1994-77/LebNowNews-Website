@@ -1,16 +1,17 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./store/store";
 import AppNavigator from "./navigation/AppNavigator";
 
 const App: React.FC = () => {
-  const [] = useState(false);
-
   return (
     <Provider store={store}>
-      <Fragment>
-        <AppNavigator />
-      </Fragment>
+      <PersistGate loading={null} persistor={persistor}>
+        <Fragment>
+          <AppNavigator />
+        </Fragment>
+      </PersistGate>
     </Provider>
   );
 };

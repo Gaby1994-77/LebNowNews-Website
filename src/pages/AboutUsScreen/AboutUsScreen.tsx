@@ -9,10 +9,8 @@ import "./AboutUsScreen.Styles.css";
 import founderImage from "../../assets/images/aboutus.jpg";
 import additionalImage from "../../assets/images/appdownload.jpg";
 import QRImage from "../../assets/images/QRCode.png";
-interface AboutUsProps {
-  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
-}
-const AboutUs: FC<AboutUsProps> = () => {
+
+const AboutUs: FC = () => {
   const [visitorCount, setVisitorCount] = useState<number>(3457852452);
   useEffect(() => {
     const interval = setInterval(() => {
