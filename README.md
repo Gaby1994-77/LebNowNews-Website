@@ -1,46 +1,37 @@
-# Getting Started with Create React App
+to run web : npm start
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Login :(Case Sensitive)
+-Username : Samir
+-Password : 123
 
-## Available Scripts
+-Username : Gaby
+-Password : 77
 
-In the project directory, you can run:
+LebNow
 
-### `npm start`
+Welcome to LebNow, your premier source for up-to-date news from Lebanon and around the world. LebNow provides you with the latest news articles, allows you to save your favorite or important news for later viewing, and offers convenient mobile apps for both iOS and Android devices.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Comprehensive Coverage: Stay informed about current events from Lebanon and across the globe with our comprehensive news coverage.
+- Save for Later: Easily save news articles that you find interesting or important to view them later at your convenience.
+- Mobile Apps: Enjoy our news platform on the go by downloading our mobile apps for iOS and Android devices.
+- About Us: Learn more about our platform and the team behind LebNow.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To get started with LebNow, simply visit our website and start browsing through the latest news articles. You can sign up for an account to unlock additional features such as saving news articles for later viewing.
 
-### `npm test`
+LebNow is dedicated to providing users with a reliable and accessible platform for accessing news from Lebanon and around the world. Our team is committed to delivering accurate and timely information to our users.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Mobile Apps
 
-### `npm run build`
+Download our mobile apps to access LebNow on your iOS or Android device:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **iOS**: Scan the QR code below or visit the App Store
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+and also it is available
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Android**: Scan the QR code below or visit the Google Play Store
 
-### `npm run eject`
+## Feedback
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+We value your feedback! If you have any suggestions, questions, or concerns regarding LebNow, please don't hesitate to reach out to us. Your input helps us improve our platform and provide you with the best possible news experience.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+Thank you for choosing LebNow for your news needs!

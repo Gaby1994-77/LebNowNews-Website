@@ -6,7 +6,13 @@ import specificImage from "../../assets/images/Logo.jpg";
 import viewButtonImage from "../../assets/icons/saveme.png";
 import styles from "./PostCard.module.css";
 import toast from "react-hot-toast";
-import { selectAccessToken } from "../../store/slice/authSlice";
+import {
+  resetAuthState,
+  selectAccessToken,
+  selectRefreshToken,
+  setAccessToken,
+} from "../../store/slice/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface Post {
   _id: string;
@@ -36,7 +42,10 @@ const PostCard = () => {
   });
   const selectedPosts = useSelector(selectSelectedPosts);
   const accessToken = useSelector(selectAccessToken);
+  const refreshToken = useSelector(selectRefreshToken);
+  const [accessTokenRefreshed, setAccessTokenRefreshed] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -50,19 +59,54 @@ const PostCard = () => {
           }
         );
         if (!response.ok) {
+          if (response.status === 403 && !accessTokenRefreshed) {
+            await refreshAccessToken();
+            setAccessTokenRefreshed(true);
+          }
           throw new Error("Failed to fetch posts");
         }
         const { results, pagination: fetchedPagination } =
           await response.json();
-        console.log(results);
         setPosts(results);
         setPagination(fetchedPagination);
+      } catch (error) {}
+    };
+    const refreshAccessToken = async () => {
+      try {
+        const response = await fetch(
+          "https://backend-practice.euriskomobility.me/refresh-token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              refreshToken,
+              token_expires_in: "0.2m",
+            }),
+          }
+        );
+        if (!response.ok) {
+          throw new Error("Failed to refresh access token");
+        }
+        const { accessToken: newAccessToken } = await response.json();
+        console.log("Previous Access Token:", accessToken);
+        console.log("New Access Token:", newAccessToken);
+        dispatch(setAccessToken(newAccessToken));
+        setAccessTokenRefreshed(true);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error refreshing access token:", error);
+        dispatch(resetAuthState());
       }
     };
-
-    fetchPosts();
+    if (!accessToken && accessTokenRefreshed) {
+      dispatch(resetAuthState());
+      console.log("session ");
+      navigate("/");
+      return;
+    } else {
+      fetchPosts();
+    }
   }, [accessToken, pagination.currentPage]);
 
   useEffect(() => {
