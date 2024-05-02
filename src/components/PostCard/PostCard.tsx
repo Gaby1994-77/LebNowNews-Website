@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectAccessToken } from "../../store/slice/authSlice";
+import Carousel from "../Carousel/Carousel";
+import specificImage from "../../assets/images/Logo.jpg";
+import viewButtonImage from "../../assets/icons/saveme.png";
 import styles from "./PostCard.module.css";
+import { saveSelectedPost } from "../../store/post";
+import toast from "react-hot-toast";
 
 interface Post {
+  id: number;
   title: string;
   link: string;
   content: string;
-  image_url: string;
+  image_url?: string;
 }
 
 interface Pagination {
@@ -16,6 +22,8 @@ interface Pagination {
   hasNextPage: boolean;
   hasPrevPage: boolean;
 }
+
+const pageSize = 12;
 
 const PostCard = () => {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -26,12 +34,13 @@ const PostCard = () => {
     hasPrevPage: false,
   });
   const accessToken = useSelector(selectAccessToken);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          `https://backend-practice.euriskomobility.me/posts?page=${pagination.currentPage}&pageSize=10`,
+          `https://backend-practice.euriskomobility.me/posts?page=${pagination.currentPage}&pageSize=${pageSize}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -41,15 +50,11 @@ const PostCard = () => {
         if (!response.ok) {
           throw new Error("Failed to fetch posts");
         }
-        const postData = await response.json();
-        setPosts(postData.results);
-        const totalPages = Math.ceil(postData.totalItems / 10) || 1;
-        setPagination((prev) => ({
-          currentPage: postData.currentPage,
-          totalPages: totalPages,
-          hasNextPage: postData.currentPage < totalPages,
-          hasPrevPage: postData.currentPage > 1,
-        }));
+        const { results, pagination: fetchedPagination } =
+          await response.json();
+        console.log(results);
+        setPosts(results);
+        setPagination(fetchedPagination);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -58,42 +63,68 @@ const PostCard = () => {
     fetchPosts();
   }, [accessToken, pagination.currentPage]);
 
+  useEffect(() => {
+    if (posts.length > 0) {
+    }
+  }, [posts]);
+
   const handleNextPage = () => {
-    setPagination((prev) => ({
-      ...prev,
-      currentPage: prev.currentPage + 1,
-    }));
+    if (pagination.hasNextPage) {
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: prev.currentPage + 1,
+      }));
+    }
   };
 
   const handlePrevPage = () => {
-    setPagination((prev) => ({
-      ...prev,
-      currentPage: prev.currentPage - 1,
-    }));
+    if (pagination.hasPrevPage) {
+      setPagination((prev) => ({
+        ...prev,
+        currentPage: prev.currentPage - 1,
+      }));
+    }
+  };
+
+  const handleSavePost = (post: Post) => {
+    dispatch(saveSelectedPost(post));
+    toast.success(`Post Saved`, {
+      position: "top-right",
+    });
   };
 
   return (
     <div className={styles.postCardContainer}>
+      {posts.length > 0 && (
+        <div className={styles.Carousel}>
+          <Carousel
+            images={posts.map((post) => ({
+              url: post.image_url || specificImage,
+              title: post.title,
+            }))}
+          />
+        </div>
+      )}
       <div className={styles.cardsWrapper}>
-        {posts.map((post, index) => (
-          <div key={index} className={styles.card}>
+        {posts.map((post: Post, index: number) => (
+          <div key={`post-${post.id || index}`} className={styles.card}>
             <img
-              src={post.image_url}
-              className={styles.cardImage}
+              src={post.image_url || specificImage}
+              className={`${styles.cardImage} ${
+                !post.image_url && styles.fallbackImage
+              }`}
               alt="Card Image"
             />
             <div className={styles.cardBody}>
               <h3 className={styles.cardTitle}>{post.title}</h3>
               <p className={styles.cardContent}>{post.content}</p>
               <div className="flex justify-end">
-                <a
-                  href={post.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <img
+                  onClick={() => handleSavePost(post)}
+                  src={viewButtonImage}
                   className={styles.viewButton}
-                >
-                  View
-                </a>
+                  alt="View Button"
+                />
               </div>
             </div>
           </div>
@@ -109,7 +140,7 @@ const PostCard = () => {
             Previous
           </button>
           <span>
-            {pagination.currentPage} {pagination.totalPages}
+            {pagination.currentPage} / {pagination.totalPages}
           </span>
           <button
             onClick={handleNextPage}

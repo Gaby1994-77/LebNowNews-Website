@@ -3,6 +3,7 @@ import { combineReducers } from "redux";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./slice/authSlice";
+import postReducer from "../store/post";
 import {
   FLUSH,
   REHYDRATE,
@@ -14,6 +15,7 @@ import {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  post: postReducer,
 });
 
 const persistConfig = {

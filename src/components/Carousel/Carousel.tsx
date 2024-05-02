@@ -1,27 +1,53 @@
 import React from "react";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
-import { EachSlideEffect, SlideSpan, ArrowContainer } from "./Carousel.Styles";
-
-const Carousel: React.FC = () => {
-  const images: string[] = [
-    "https://images.unsplash.com/photo-1509721434272-b79147e0e708?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
-    "https://images.unsplash.com/photo-1506710507565-203b9f24669b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1536&q=80",
-    "https://images.unsplash.com/photo-1536987333706-fc9adfb10d91?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1500&q=80",
-  ];
+import styles from "./Carousel.module.css";
+interface Props {
+  images: { url: string; title?: string }[];
+}
+const Carousel: React.FC<Props> = ({ images }) => {
+  const imagePairs = [];
+  for (let i = 0; i < images.length; i += 2) {
+    imagePairs.push(images.slice(i, i + 2));
+  }
 
   return (
-    <ArrowContainer>
+    <div className={styles.ArrowContainer}>
       <Slide>
-        {images.map((image, index) => (
-          <EachSlideEffect key={index}>
-            <div style={{ backgroundImage: `url(${image})` }}>
-              <SlideSpan>Slide {index + 1}</SlideSpan>
+        {imagePairs.map((pair, index) => (
+          <div className="each-slide" key={index}>
+            <div className={styles.EachSlideEffect}>
+              <div
+                className={styles.ImageWrapper}
+                style={{
+                  backgroundImage: `url(${pair[0].url})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  width: "50%",
+                  height: "100%",
+                }}
+              >
+                <span className={styles.SlideTitle}>{pair[0].title}</span>
+              </div>
+              {pair[1] && (
+                <div
+                  className={styles.ImageWrapper}
+                  style={{
+                    backgroundImage: `url(${pair[1].url})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    width: "50%",
+                    height: "100%",
+                  }}
+                >
+                  <span className={styles.SlideTitle}>{pair[1].title}</span>
+                </div>
+              )}
             </div>
-          </EachSlideEffect>
+          </div>
         ))}
       </Slide>
-    </ArrowContainer>
+    </div>
   );
 };
 

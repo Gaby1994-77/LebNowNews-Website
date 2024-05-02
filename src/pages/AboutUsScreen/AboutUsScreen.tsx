@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  FC,
-  Dispatch,
-  SetStateAction,
-} from "react";
+import React, { useState, useEffect, FC } from "react";
 import "./AboutUsScreen.Styles.css";
 import founderImage from "../../assets/images/aboutus.jpg";
 import additionalImage from "../../assets/images/appdownload.jpg";

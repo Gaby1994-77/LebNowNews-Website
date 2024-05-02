@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
 import { setAccessToken, setRefreshToken } from "../../store/slice/authSlice";
+import { clearSelectedPosts } from "../../store/post";
 import { toast } from "react-hot-toast";
 import {
   LoginContainer,
@@ -19,7 +19,7 @@ import {
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("Samir");
   const [password, setPassword] = useState("123");
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -35,7 +35,7 @@ const LoginScreen: React.FC = () => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, token_expires_in: "1m" }),
+          body: JSON.stringify({ email, password, token_expires_in: "30m" }),
         }
       );
 
@@ -46,6 +46,7 @@ const LoginScreen: React.FC = () => {
 
       dispatch(setAccessToken(data.accessToken));
       dispatch(setRefreshToken(data.refreshToken));
+      dispatch(clearSelectedPosts());
       console.log(data.accessToken);
       toast.success(`Welcome, ${email}! Login successful.`, {
         position: "top-right",

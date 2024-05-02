@@ -51,12 +51,10 @@ const SignUpScreen: React.FC = () => {
       }
       dispatch(setAccessToken(data.accessToken));
       dispatch(setRefreshToken(data.refreshToken));
-      console.log(data.accessToken);
       navigate("/", { replace: true });
 
       toast.success("Account created successfully!");
     } catch (error) {
-      console.error("Signup error:", error);
       toast.error((error as Error).message || "An unexpected error occurred");
     }
   };

@@ -1,0 +1,43 @@
+/* Carousel.module.css */
+.EachSlideEffect {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  background-size: initial;
+  height: 450px; /* Adjust the height of the carousel */
+}
+
+.SlideSpan {
+  margin-top: 0px; /* Fixed typo: Add 'px' after the value */
+  padding: 200px;
+  font-size: 24px;
+  text-align: center;
+  width: 33.33%;
+}
+
+.ArrowContainer .each-slide-arrow {
+  top: 50%;
+  margin: 0px;
+}
+
+.ArrowContainer .each-slide-arrow svg {
+  width: 40px;
+  height: 40px;
+}
+
+.SlideTitle {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 10px;
+  background-color: white;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  text-align: center;
+}
+.ImageWrapper {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+}
