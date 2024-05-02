@@ -2,6 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectSelectedPosts, removePost } from "../../store/post";
 import styles from "./SavedNewsScreen.module.css";
+import { toast } from "react-hot-toast";
 
 function SavedNewsScreen() {
   const dispatch = useDispatch();
