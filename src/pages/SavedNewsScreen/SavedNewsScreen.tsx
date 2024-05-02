@@ -9,6 +9,9 @@ function SavedNewsScreen() {
 
   const handleRemove = (articleId: string) => {
     dispatch(removePost(articleId));
+    toast.success(`Post Removed`, {
+      position: "top-left",
+    });
   };
 
   if (!selectedPosts || selectedPosts.length === 0) {
