@@ -93,7 +93,7 @@ const Navbar: React.FC = () => {
           </div>
         </div>
         {isMenuOpen && (
-          <ul className="lg:hidden flex flex-col space-y-4 text-base font-bold text-black/60 dark:text-white">
+          <ul className="lg:hidden flex flex-col space-y-4 text-base font-bold text-white">
             <li className="hover:underline hover:underline-offset-4 hover:w-fit transition-all duration-100 ease-linear">
               <Link to="/">News</Link>
             </li>
