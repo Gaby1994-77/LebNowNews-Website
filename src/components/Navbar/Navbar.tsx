@@ -32,12 +32,12 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <div className="top-0 py-1 lg:py-2 w-full bg-transparent lg:relative z-50 dark:bg-gray-900">
+    <div className="top-0 py-1 lg:py-2 w-full lg:relative z-50 bg-gray-900">
       <nav className="z-10 sticky top-0 left-0 right-0 max-w-4xl xl:max-w-5xl mx-auto px-5 py-2.5 lg:border-none lg:py-4">
         <div className="flex items-center justify-between">
           <button onClick={toggleMenu} className="lg:hidden">
             <svg
-              className="w-6 h-6 text-black dark:text-white"
+              className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
           </button>
           <div className="flex items-center ">
             <img src={logo} alt="Logo" className="w-12 h-10 mr-4" />
-            <h2 className="text-black dark:text-white font-bold text-2xl">
+            <h2 className="text-white font-bold text-2xl">
               LebNow
             </h2>
           </div>
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
             <li>
               <Link
                 to="/"
-                className="text-black dark:text-white hover:underline"
+                className="text-white hover:underline"
               >
                 <button onClick={handleNavigation}>News</button>
               </Link>
@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
             <li>
               <Link
                 to="/savedNews"
-                className="text-black dark:text-white hover:underline"
+                className="text-white hover:underline"
               >
                 Saved News
               </Link>
@@ -77,7 +77,7 @@ const Navbar: React.FC = () => {
             <li>
               <Link
                 to="/about"
-                className="text-black dark:text-white hover:underline"
+                className="text-white hover:underline"
               >
                 About Us
               </Link>
