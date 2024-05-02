@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { selectAccessToken } from "../../store/slice/authSlice";
+import { selectSelectedPosts, saveSelectedPost } from "../../store/post";
 import Carousel from "../Carousel/Carousel";
 import specificImage from "../../assets/images/Logo.jpg";
 import viewButtonImage from "../../assets/icons/saveme.png";
 import styles from "./PostCard.module.css";
-import { saveSelectedPost } from "../../store/post";
 import toast from "react-hot-toast";
+import { selectAccessToken } from "../../store/slice/authSlice";
 
 interface Post {
-  id: number;
+  _id: string;
+  article_id: string;
   title: string;
   link: string;
   content: string;
@@ -33,6 +34,7 @@ const PostCard = () => {
     hasNextPage: false,
     hasPrevPage: false,
   });
+  const selectedPosts = useSelector(selectSelectedPosts);
   const accessToken = useSelector(selectAccessToken);
   const dispatch = useDispatch();
 
@@ -87,10 +89,20 @@ const PostCard = () => {
   };
 
   const handleSavePost = (post: Post) => {
-    dispatch(saveSelectedPost(post));
-    toast.success(`Post Saved`, {
-      position: "top-right",
-    });
+    const postExists = selectedPosts.some(
+      (savedPost) => savedPost._id === post._id
+    );
+
+    if (!postExists) {
+      dispatch(saveSelectedPost(post));
+      toast.success(`Post Saved`, {
+        position: "top-right",
+      });
+    } else {
+      toast.error(`Post already saved!`, {
+        position: "top-right",
+      });
+    }
   };
 
   return (
@@ -107,7 +119,7 @@ const PostCard = () => {
       )}
       <div className={styles.cardsWrapper}>
         {posts.map((post: Post, index: number) => (
-          <div key={`post-${post.id || index}`} className={styles.card}>
+          <div key={`post-${post._id || index}`} className={styles.card}>
             <img
               src={post.image_url || specificImage}
               className={`${styles.cardImage} ${

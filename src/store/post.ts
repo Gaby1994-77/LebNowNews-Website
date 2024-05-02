@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
 interface Post {
-  id: number;
+  _id: string;
+  article_id: string;
   title: string;
   link: string;
   content: string;
@@ -24,9 +25,9 @@ export const postSlice = createSlice({
     saveSelectedPost: (state, action: PayloadAction<Post>) => {
       state.selectedPosts.push(action.payload);
     },
-    removePost: (state, action: PayloadAction<number>) => {
+    removePost: (state, action: PayloadAction<string>) => {
       state.selectedPosts = state.selectedPosts.filter(
-        (post) => post.id !== action.payload
+        (post) => post.article_id !== action.payload
       );
     },
     clearSelectedPosts: (state) => {
@@ -40,5 +41,9 @@ export const { saveSelectedPost, removePost, clearSelectedPosts } =
 
 export const selectSelectedPosts = (state: RootState) =>
   state.post.selectedPosts;
+
+export const isPostSaved = (state: RootState, postId: string) => {
+  return state.post.selectedPosts.some((post) => post._id === postId);
+};
 
 export default postSlice.reducer;
