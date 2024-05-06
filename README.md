@@ -22,13 +22,7 @@ LebNow is dedicated to providing users with a reliable and accessible platform f
 
 Mobile Apps
 
-Download our mobile apps to access LebNow on your iOS or Android device:
-
-- **iOS**: Scan the QR code below or visit the App Store
-
-and also it is available
-
-- **Android**: Scan the QR code below or visit the Google Play Store
+Scan the Qr Code to Download the app on mobile.
 
 ## Feedback
 
