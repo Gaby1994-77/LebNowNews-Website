@@ -13,6 +13,7 @@ import {
 } from "./SignUpPage.Style";
 import { useDispatch } from "react-redux";
 import { setAccessToken, setRefreshToken } from "../../store/slice/authSlice";
+import { baseUrl } from "../../api";
 
 const SignUpScreen: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -34,14 +35,11 @@ const SignUpScreen: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        "https://backend-practice.euriskomobility.me/signup",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const response = await fetch(`${baseUrl}signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
       const data = await response.json();
       if (!response.ok) {
