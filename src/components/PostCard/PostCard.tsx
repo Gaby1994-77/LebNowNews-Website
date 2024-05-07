@@ -13,6 +13,7 @@ import {
   setAccessToken,
 } from "../../store/slice/authSlice";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../../api";
 
 interface Post {
   _id: string;
@@ -51,7 +52,7 @@ const PostCard = () => {
     const fetchPosts = async () => {
       try {
         const response = await fetch(
-          `https://backend-practice.euriskomobility.me/posts?page=${pagination.currentPage}&pageSize=${pageSize}`,
+          `${baseUrl}posts?page=${pagination.currentPage}&pageSize=${pageSize}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -73,19 +74,16 @@ const PostCard = () => {
     };
     const refreshAccessToken = async () => {
       try {
-        const response = await fetch(
-          "https://backend-practice.euriskomobility.me/refresh-token",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              refreshToken,
-              token_expires_in: "0.2m",
-            }),
-          }
-        );
+        const response = await fetch(`${baseUrl}refresh-token`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            refreshToken,
+            token_expires_in: "0.2m",
+          }),
+        });
         if (!response.ok) {
           throw new Error("Failed to refresh access token");
         }
