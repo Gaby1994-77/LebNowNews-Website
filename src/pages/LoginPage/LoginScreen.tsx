@@ -15,6 +15,7 @@ import {
   SignUp,
   WelcomeTitle,
 } from "./LoginScreen.Style";
+import { baseUrl } from "../../api";
 
 const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -30,14 +31,11 @@ const LoginScreen: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        "https://backend-practice.euriskomobility.me/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password, token_expires_in: "0.2m" }),
-        }
-      );
+      const response = await fetch(`${baseUrl}login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, token_expires_in: "0.2m" }),
+      });
 
       const data = await response.json();
       if (!response.ok) {
